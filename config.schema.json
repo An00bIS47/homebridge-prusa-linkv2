@@ -13,16 +13,46 @@
         "default": "Prusa Link"
       },
       "ip": {
-        "title": "IP-Address",
-        "description": "The ip address of your printer",
+        "title": "Hostname",
+        "description": "The ip address or hostname of your printer",
         "type": "string",
         "required": true
+      },
+      "auth": {
+        "title": "Authentication Method",
+        "description": "The authentication method for Prusa Link",
+        "type": "string",
+        "default": "basic",
+        "oneOf": [
+          { "title": "API Key", "enum": ["api-key"] },
+          { "title": "Basic Auth", "enum": ["basic"] },
+          { "title": "None", "enum": ["none"] }
+        ],
+        "required": true
+      },
+      "username": {
+        "title": "Basic Authentication username",
+        "description": "The username for Basic Authentication",
+        "type": "string", 
+        "condition": {
+          "functionBody": "return model.auth === 'basic';"
+        }      
+      },
+      "password": {
+        "title": "Basic Authentication password",
+        "description": "The password for Basic Authentication",
+        "type": "string", 
+        "condition": {
+          "functionBody": "return model.auth === 'basic';"
+        }      
       },
       "apikey": {
         "title": "API-Key",
         "description": "The API key of your printer",
         "type": "string",
-        "required": true
+        "condition": {
+          "functionBody": "return model.auth === 'api-key';"
+        } 
       },
       "manufacturer": {
         "title": "Manufacturer",
@@ -41,13 +71,40 @@
         "description": "The name of your printer model",
         "type": "string",
         "default": "Printer"
+      },
+      "maxPrintFanRpm": {
+        "title": "Maximum RPM Print Fan",
+        "description": "The maximum RPM of the print fan",
+        "type": "number",
+        "default": 2000,
+        "required": true
+      },
+      "maxHotEndFanRpm": {
+        "title": "Maximum RPM Hot End Fan",
+        "description": "The maximum RPM of the hot end fan",
+        "type": "number",
+        "default": 2000,
+        "required": true
       }
     }
   },
   "layout": [
     { "key": "name" },
     { "key": "ip" },
+    { "key": "auth" },
     { "key": "apikey" },
+    { "key": "username" },
+    { "key": "password" },
+    { "title": "Advanced",
+      "description": "Advanced configuration",
+      "type": "fieldset", 
+      "expandable": true,
+      "expanded": false,
+      "items": [ 
+        "maxHotEndFanRpm", 
+        "maxPrintFanRpm"
+      ]
+    },
     { "title": "Device Informations",
       "description": "Additional device informations for display only",
       "type": "fieldset", 
